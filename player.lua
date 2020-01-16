@@ -31,7 +31,7 @@ end
 function Player:shoot(dt)
     self.currentShootCouldown = self.currentShootCouldown + dt;
     if love.keyboard.isDown("space") and self.shootCouldown < self.currentShootCouldown then
-        print("SHOOT");
+        
         BulletManager:createBullet(self.transform.position.x, self.transform.position.y, self.damage,
     self.transform.dir, 700);
         self.currentShootCouldown = 0;

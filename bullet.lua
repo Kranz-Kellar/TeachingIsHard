@@ -1,11 +1,13 @@
 require("transform")
 require("debugDraw")
+require("physicsManager")
 
 Bullet = {};
 
 
-function Bullet:create(x, y, damage, direction, speed, sprite)
+function Bullet:create(x, y, damage, direction, speed, sprite, world)
     local object = {};
+    object.type = "bullet";
     local transform = Transform:create(x, y, 1, 1, sprite:getWidth(),
      sprite:getHeight(), direction);
      object.transform = transform;
@@ -13,6 +15,11 @@ function Bullet:create(x, y, damage, direction, speed, sprite)
     object.isEnabled = true;
     object.speed = speed or 100;
     object.damage = damage or 10;
+    object.physics = {};
+    object.physics.body = PhysicsManager:createBody(x, y, "dynamic");
+    object.physics.shape = love.physics.newRectangleShape(sprite:getWidth(), sprite:getHeight());
+    object.physics.fixture = love.physics.newFixture(object.physics.body, object.physics.shape);
+    object.physics.fixture:setUserData("bullet");
 
 
     setmetatable(object, self)
@@ -23,6 +30,10 @@ end
 
 function Bullet:update(dt)
     self:move(dt);
+
+    self.physics.body:applyForce(100, 0);
+    self.transform.position.x = self.physics.body:getX();
+    self.transform.position.y = self.physics.body:getY();
 end
 
 function Bullet:draw()
@@ -42,5 +53,6 @@ end
 
 
 function Bullet:destroy()
-
+    print("Destroyed")
+    self = nil;
 end
