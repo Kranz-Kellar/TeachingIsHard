@@ -13,7 +13,7 @@ function Transform:create(x, y, sizeX, sizeY, widthInPixels, heightInPixels, dir
     object.size.y = sizeY or 1;
     object.height = heightInPixels;
     object.width = widthInPixels;
-    object.dir = dir;
+    object.direction = dir;
 
     setmetatable(object, self);
     self.__index = self;

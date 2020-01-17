@@ -3,34 +3,50 @@ require("bulletManager")
 require("dummyManager")
 require("debugDraw")
 require("physicsManager")
+require("mouseController")
 require("wall")
 
 
 function love.load()
-    PhysicsManager:init();
-    player = Player:create(10, 10, 400, 10, 0.1, love.graphics.newImage("player.png"));
-    dummy = DummyManager:createDummy();
-    wall = Wall:create(500, 250, 100, 800, love.graphics.newImage("player.png"));
-    
+    for i = 1, 1 do
+        DummyManager:createDummy();
+    end
+
+   -- DummyManager:createInfiniteDummy();
+    mouseX = 0;
+    mouseY = 0;
+    deltaTime = 0;
 end
 
 
 function love.update(dt)
-    player:update(dt);
+    deltaTime = dt;
     BulletManager:update(dt);
     DummyManager:updateAllDummies(dt);
-    PhysicsManager:updateWorld(dt);
+    MouseController:update(dt);
+
+    if love.keyboard.isDown("f") then
+        DummyManager:createDummy();
+    end
+    if love.keyboard.isDown("q") then
+        collectgarbage();
+    end
 end
 
 function love.draw()
-    love.graphics.print(player.currentShootCouldown, 100, 100);
-    love.graphics.print(player.shakeMagnitude, 100, 120);
-    love.graphics.print(table.getn(BulletManager.pool), 100, 140);
-
     
     BulletManager:draw();
     DummyManager:drawAllDummies();
-    player:draw();
+    --player:draw();
 
-    wall:draw();
+   -- wall:draw();
+   love.graphics.setColor(0, 1, 0);
+    love.graphics.print("dt "..deltaTime, 10, 30);
+    love.graphics.print("Pool of dummies "..#DummyManager.pool, 10, 10);
+    love.graphics.print('Memory actually used (in kB): ' .. collectgarbage('count'), 10,50)
+    local stats = love.graphics.getStats()
+ 
+    local str = string.format("Estimated amount of texture memory used: %.2f MB", stats.texturememory / 1024 / 1024)
+    love.graphics.print(str, 10, 70)
+    love.graphics.setColor(1, 1, 1);
 end
